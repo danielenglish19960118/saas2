@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Garfield AI Voice Receptionist | B2B SaaS Management Portal</title>
+  <link href="https://fonts.googleapis.com/css2?family=Bangers&family=Comic+Neue:wght@400;700&family=Fredoka:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --garfield-orange: #ff7a00;
+      --garfield-yellow: #ffc72c;
+      --lasagna-brown: #8b4513;
+      --bg-dark: #0f172a;
+      --card-bg: #1e293b;
+      --border-comic: #1e1b18;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --error: #ef4444;
+      --success: #10b981;
+    }
+
+    body {
+      margin: 0;
+      padding: 20px;
+      background-color: var(--bg-dark);
+      color: var(--text-main);
+      font-family: 'Comic Neue', cursive, sans-serif;
+    }
+
+    .header-banner {
+      background: var(--garfield-orange);
+      color: #000;
+      padding: 15px 25px;
+      border: 4px solid var(--border-comic);
+      border-radius: 12px;
+      box-shadow: 6px 6px 0px var(--border-comic);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 25px;
+    }
+
+    .header-title {
+      font-family: 'Bangers', cursive;
+      font-size: 32px;
+      letter-spacing: 1px;
+      margin: 0;
+    }
+
+    .status-badge {
+      background: var(--garfield-yellow);
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-weight: bold;
+      border: 2px solid var(--border-comic);
+    }
+
+    .grid-layout {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    @media (max-width: 900px) {
+      .grid-layout { grid-template-columns: 1fr; }
+    }
+
+    .comic-card {
+      background: var(--card-bg);
+      border: 4px solid var(--border-comic);
+      border-radius: 16px;
+      padding: 25px;
+      box-shadow: 6px 6px 0px var(--border-comic);
+      position: relative;
+    }
+
+    .card-title {
+      font-family: 'Bangers', cursive;
+      font-size: 24px;
+      color: var(--garfield-orange);
+      margin-top: 0;
+    }
+
+    .form-group { margin-bottom: 16px; }
+    .form-label { display: block; margin-bottom: 6px; font-weight: bold; }
+    .form-input, .form-textarea {
+      width: 100%;
+      padding: 10px;
+      border-radius: 8px;
+      border: 2px solid var(--border-comic);
+      background: #334155;
+      color: white;
+      box-sizing: border-box;
+    }
+
+    .btn-garfield {
+      width: 100%;
+      padding: 12px;
+      background: var(--garfield-orange);
+      color: #000;
+      font-family: 'Bangers', cursive;
+      font-size: 20px;
+      border: 3px solid var(--border-comic);
+      border-radius: 8px;
+      cursor: pointer;
+      box-shadow: 3px 3px 0px var(--border-comic);
+      transition: transform 0.1s;
+    }
+
+    .btn-garfield:active {
+      transform: translate(2px, 2px);
+      box-shadow: 1px 1px 0px var(--border-comic);
+    }
+
+    /* Security Overlay inside Card */
+    .lock-overlay {
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(15, 23, 42, 0.85);
+      backdrop-filter: blur(4px);
+      border-radius: 12px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 10;
+      padding: 20px;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="header-banner">
+    <h1 class="header-title">🐱 GARFIELD'S AI RECEPTIONIST SAAS</h1>
+    <div id="sec-badge" class="status-badge">🔒 Locked</div>
+  </div>
+
+  <div class="grid-layout">
+    
+    <!-- Left Column: Provisioning Portal with Coexisting Security -->
+    <div class="comic-card">
+      <h2 class="card-title">🤖 CLIENT TENANT PROVISIONING</h2>
+
+      <!-- Inline Security Gate Overlay -->
+      <div id="lock-gate" class="lock-overlay">
+        <h3 style="font-family:'Bangers'; font-size: 24px; color: var(--garfield-yellow);">🔐 Access Verification Required</h3>
+        <p style="font-size:14px; color: var(--text-muted);">Enter secure access key to unlock provisioning (e.g. <code>garfield</code>)</p>
+        <input type="password" id="gate-pass" class="form-input" style="max-width: 250px; text-align: center; margin-bottom: 10px;" placeholder="Access Key...">
+        <button onclick="verifyGate()" class="btn-garfield" style="max-width: 200px;">Verify & Unlock</button>
+        <p id="gate-err" style="color: var(--error); display:none; margin-top: 8px; font-size: 13px;"></p>
+      </div>
+
+      <!-- Provisioning Form -->
+      <form id="tenant-form" onsubmit="handleProvision(event)">
+        <div class="form-group">
+          <label class="form-label">Client / Business Name</label>
+          <input type="text" id="biz-name" class="form-input" placeholder="e.g. Austin Dental Clinic" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Industry / Business Type</label>
+          <input type="text" id="biz-type" class="form-input" placeholder="e.g. Healthcare Services" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Initial System Prompt / Greeting</label>
+          <textarea id="biz-prompt" class="form-textarea" rows="4" required>Hello! Thanks for calling. How may I assist you today?</textarea>
+        </div>
+        <button type="submit" id="deploy-btn" class="btn-garfield">Deploy Vapi Assistant</button>
+      </form>
+
+      <div id="deploy-result" style="display:none; margin-top: 15px; padding: 12px; background: rgba(16,185,129,0.1); border: 2px solid var(--success); border-radius: 8px;">
+        <h4 style="margin:0 0 5px 0; color: var(--success);">✨ Tenant Deployed!</h4>
+        <div id="result-details" style="font-family: monospace; font-size: 12px;"></div>
+      </div>
+    </div>
+
+    <!-- Right Column: Lasagna & Light Instagram Feed -->
+    <div class="comic-card">
+      <h2 class="card-title">🍝 LASAGNA & LIGHT (@lasagna_and_light)</h2>
+      <p style="color: var(--text-muted); font-size: 14px;">Garfield's favorite culinary & aesthetic updates live from Instagram.</p>
+
+      <div style="border: 2px dashed var(--garfield-yellow); padding: 15px; border-radius: 10px; background: rgba(255,199,44,0.05); text-align: center;">
+        <img src="https://images.unsplash.com/photo-1551183053-bf91a1d81141?auto=format&fit=crop&w=400&q=80" alt="Lasagna" style="width: 100%; max-height: 200px; object-fit: cover; border-radius: 8px; border: 2px solid var(--border-comic);">
+        <p style="font-weight: bold; margin: 10px 0 5px 0;">"Layered perfection with warm afternoon light. 🧀✨"</p>
+        <a href="https://www.instagram.com/lasagna_and_light/" target="_blank" class="btn-garfield" style="display: inline-block; text-decoration: none; padding: 8px 16px; margin-top: 5px;">Visit @lasagna_and_light on Instagram</a>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    // 1. Session check
+    window.addEventListener('DOMContentLoaded', () => {
+      if (sessionStorage.getItem('saas_auth_token') === 'verified') {
+        unlockGate();
+      }
+    });
+
+    function unlockGate() {
+      document.getElementById('lock-gate').style.display = 'none';
+      document.getElementById('sec-badge').textContent = '🔓 Unlocked';
+      document.getElementById('sec-badge').style.background = '#10b981';
+      document.getElementById('sec-badge').style.color = '#fff';
+    }
+
+    // 2. Verify Password via API
+    async function verifyGate() {
+      const password = document.getElementById('gate-pass').value.trim();
+      const errEl = document.getElementById('gate-err');
+      errEl.style.display = 'none';
+
+      try {
+        const res = await fetch('/api/verify-password', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ password })
+        });
+        const data = await res.json();
+        if (data.success) {
+          sessionStorage.setItem('saas_auth_token', 'verified');
+          unlockGate();
+        } else {
+          errEl.textContent = data.message || 'Invalid Key!';
+          errEl.style.display = 'block';
+        }
+      } catch (e) {
+        errEl.textContent = 'Server connection error.';
+        errEl.style.display = 'block';
+      }
+    }
+
+    // 3. Create Tenant via API
+    async function handleProvision(e) {
+      e.preventDefault();
+      const btn = document.getElementById('deploy-btn');
+      btn.disabled = true;
+      btn.textContent = 'Deploying...';
+
+      const payload = {
+        businessName: document.getElementById('biz-name').value,
+        businessType: document.getElementById('biz-type').value,
+        promptInstructions: document.getElementById('biz-prompt').value
+      };
+
+      try {
+        const res = await fetch('/api/create-tenant', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+        const data = await res.json();
+        if (data.success) {
+          document.getElementById('result-details').innerHTML = `
+            Assistant ID: ${data.assistantId}<br>
+            Client: ${payload.businessName}<br>
+            Status: Active & Voice Ready
+          `;
+          document.getElementById('deploy-result').style.display = 'block';
+          document.getElementById('tenant-form').reset();
+        }
+      } catch (err) {
+        alert('Failed to deploy assistant.');
+      } finally {
+        btn.disabled = false;
+        btn.textContent = 'Deploy Vapi Assistant';
+      }
+    }
+  </script>
+</body>
+</html>
